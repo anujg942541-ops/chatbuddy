@@ -3,6 +3,7 @@ fpdf
 pypdf
 faiss-cpu
 langchain
-euriai 
 langchain_community
 sentence-transformers
+transformers
+accelerate
