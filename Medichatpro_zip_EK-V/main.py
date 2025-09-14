@@ -139,7 +139,7 @@ for message in st.session_state.messages:
         st.caption(message["timestamp"])
 
 # Chat input
-if prompt := st.chat_input("Ask about your medical documents..."):
+if prompt := st.chat_input("Ask about your documents..."):
     # Add user message to chat history
     timestamp = time.strftime("%H:%M")
     st.session_state.messages.append({
@@ -164,8 +164,8 @@ if prompt := st.chat_input("Ask about your medical documents..."):
                 context = "\n\n".join([doc.page_content for doc in relevant_docs])
                 
                 # Create prompt with context
-                system_prompt = f"""You are MediChat Pro, an intelligent medical document assistant. 
-                Based on the following medical documents, provide accurate and helpful answers. 
+                system_prompt = f"""You are Chat Pro, an intelligent  document assistant. 
+                Based on the following  documents, provide accurate and helpful answers. 
                 If the information is not in the documents, clearly state that.
 
                 Medical Documents:
@@ -198,3 +198,4 @@ st.markdown("""
     <p>🤖 Powered by Euri AI & LangChain | 🏥  Document Intelligence</p>
 </div>
 """, unsafe_allow_html=True)    
+
