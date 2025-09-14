@@ -195,7 +195,8 @@ if prompt := st.chat_input("Ask about your documents..."):
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; font-size: 0.9rem;">
-    <p>🤖 Powered by Euri AI & LangChain | 🏥  Document Intelligence</p>
+    <p>🤖 Powered by googlecolab | 🏥  Document Intelligence</p>
 </div>
 """, unsafe_allow_html=True)    
+
 
