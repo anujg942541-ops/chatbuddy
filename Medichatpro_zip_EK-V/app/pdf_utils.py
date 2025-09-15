@@ -1,13 +1,10 @@
-import fitz  # PyMuPDF
+from pypdf import  PdfReader
+from typing import List, Optional
+from io import BytesIO
 
-def extract_text_from_pdf(uploaded_file):
-    """
-    Extract text from a Streamlit-uploaded PDF file.
-    """
-    text = ""
-    # Reset pointer (important if file.read() was called before)
-    uploaded_file.seek(0)
-    with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
-        for page in doc:
-            text += page.get_text("text")
+def extract_text_from_pdf(file):
+    reader = PdfReader(file)
+    text = ' '
+    for page in reader.pages:
+        text = text + page.extract_text() or ''
     return text
