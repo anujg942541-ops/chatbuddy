@@ -100,7 +100,7 @@ with st.sidebar:
         
         # Process documents
         if st.button("🚀 Process Documents", type="primary"):
-            with st.spinner("Processing your medical documents..."):
+            with st.spinner("Processing your documents..."):
                 # Extract text from all PDFs
                 all_texts = []
                 for file in uploaded_files:
@@ -168,9 +168,6 @@ if prompt := st.chat_input("Ask about your documents..."):
                 Based on the following  documents, provide accurate and helpful answers. 
                 If the information is not in the documents, clearly state that.
 
-                Medical Documents:
-                {context}
-
                 User Question: {prompt}
 
                 Answer:"""
@@ -198,5 +195,6 @@ st.markdown("""
     <p>🤖 Powered by googlecolab | 🏥  Document Intelligence</p>
 </div>
 """, unsafe_allow_html=True)    
+
 
 
