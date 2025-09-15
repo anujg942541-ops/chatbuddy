@@ -168,6 +168,9 @@ if prompt := st.chat_input("Ask about your documents..."):
                 Based on the following  documents, provide accurate and helpful answers. 
                 If the information is not in the documents, clearly state that.
 
+                Documents:
+                {context}
+                
                 User Question: {prompt}
 
                 Answer:"""
@@ -195,6 +198,7 @@ st.markdown("""
     <p>🤖 Powered by googlecolab | 🏥  Document Intelligence</p>
 </div>
 """, unsafe_allow_html=True)    
+
 
 
 
