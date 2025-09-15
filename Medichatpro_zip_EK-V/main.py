@@ -197,8 +197,7 @@ st.markdown("""
 <div style="text-align: center; color: #666; font-size: 0.9rem;">
     <p>🤖 Powered by googlecolab | 🏥  Document Intelligence</p>
 </div>
-""", unsafe_allow_html=True)    
-
+""", unsafe_allow_html=True)
 
 
 
