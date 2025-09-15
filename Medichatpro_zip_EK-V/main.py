@@ -5,7 +5,7 @@ from app.vectorstore_utils import create_faiss_index, retrive_relevant_docs
 from app.chat_utils import get_chat_model, ask_chat_model
 from app.config import EURI_API_KEY
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import time
+import time, re
 
 
 st.set_page_config(
@@ -88,6 +88,23 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
+# ---------------- NEW FUNCTION ----------------
+def retrieve_question_by_number(vectorstore, prompt):
+    """
+    If user asks "Question X", search specifically for that question,
+    otherwise fallback to semantic retrieval.
+    """
+    match = re.search(r"question\s*(\d+)", prompt.lower())
+    if match:
+        q_num = match.group(1)
+        query = f"Question {q_num}"
+        return retrive_relevant_docs(vectorstore, query)
+    else:
+        return retrive_relevant_docs(vectorstore, prompt)
+# ------------------------------------------------
+
+
 # Sidebar for document upload
 with st.sidebar:
     st.markdown("### 📁 Document Upload")
@@ -157,22 +174,26 @@ if prompt := st.chat_input("Ask about your documents..."):
     if st.session_state.vectorstore and st.session_state.chat_model:
         with st.chat_message("assistant"):
             with st.spinner("🔍 Searching documents..."):
-                # Retrieve relevant documents
-                relevant_docs = retrive_relevant_docs(st.session_state.vectorstore, prompt)
+                # ✅ Use improved retrieval
+                relevant_docs = retrieve_question_by_number(st.session_state.vectorstore, prompt)
                 
                 # Create context from relevant documents
-                context = "\n\n".join([doc.page_content for doc in relevant_docs])
+                context = "\n\n".join([f"--- Document Chunk ---\n{doc.page_content}" for doc in relevant_docs])
                 
                 # Create prompt with context
-                system_prompt = f"""You are Chat Pro, an intelligent  document assistant. 
-                Based on the following  documents, provide accurate and helpful answers. 
-                If the information is not in the documents, clearly state that.
-
+                system_prompt = f"""You are Chat Pro, an intelligent document assistant. 
+                The user will usually ask about a specific question number (e.g., "Question 1"). 
+                Always try to find that exact question in the documents first. 
+                If you cannot find the requested question, clearly say: 
+                "I could not find Question X in the document."
+                
+                Only use the text from the documents to answer.
+                
                 Documents:
                 {context}
                 
                 User Question: {prompt}
-
+                
                 Answer:"""
                 
                 response = ask_chat_model(st.session_state.chat_model, system_prompt)
@@ -197,8 +218,4 @@ st.markdown("""
 <div style="text-align: center; color: #666; font-size: 0.9rem;">
     <p>🤖 Powered by googlecolab | 🏥  Document Intelligence</p>
 </div>
-""", unsafe_allow_html=True)    
-
-
-
-
+""", unsafe_allow_html=True)
