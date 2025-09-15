@@ -5,12 +5,18 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from typing import List
 
 #Store data in the form of embeddings 
-def create_faiss_index(texts: List[str]) :
-    embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/all-mpnet-base-v2")
-    return FAISS.from_texts(texts, embeddings)
+def create_faiss_index(chunks):
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-mpnet-base-v2",
+        model_kwargs={"device": "cpu"}   # force CPU load
+    )
+    return embeddings.embed_documents(chunks)
 
 #Top 4 results 
 def retrive_relevant_docs(vectorstore: FAISS, query: str, k: int = 4):
     return vectorstore.similarity_search(query, k=k)
+
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
 
 
