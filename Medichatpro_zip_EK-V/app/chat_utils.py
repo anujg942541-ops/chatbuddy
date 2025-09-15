@@ -2,25 +2,22 @@ from langchain_community.llms import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 import re
 
-# Pick your model here 👇
-#MODEL_ID = "facebook/opt-350m"
-#MODEL_ID = "tiiuae/falcon-7b-instruct"
-MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.2"
+# Default model (open, no token required)
+MODEL_ID = "tiiuae/falcon-7b-instruct"
 
 
 def get_chat_model(api_key=None):
     """
-    Loads a Hugging Face model into a pipeline and wraps it for LangChain.
-    NOTE: these models need GPU for best performance (enable GPU in Colab).
+    Loads Falcon-7B-Instruct into a Hugging Face pipeline.
+    Runs best on GPU (enable GPU in Colab).
     """
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
-        device_map="auto",   # puts model on GPU if available
-        torch_dtype="auto"   # uses fp16/bf16 automatically if supported
+        device_map="auto",   # automatically use GPU if available
+        torch_dtype="auto"   # use FP16/BF16 where supported
     )
 
-    # Text-generation pipeline
     pipe = pipeline(
         "text-generation",
         model=model,
@@ -40,7 +37,6 @@ def extract_direct_answer(prompt: str, context: str) -> str | None:
     """
     if not context:
         return None
-    text = context.lower()
 
     # Surgery extraction
     if "surgery" in prompt.lower() or "surgeries" in prompt.lower():
@@ -79,7 +75,7 @@ def ask_chat_model(chat_model, prompt: str, context: str = None) -> str:
         if extracted:
             return extracted
 
-    # Fallback: let the LLM answer
+    # Fallback to LLM
     result = chat_model.invoke(prompt)
     if isinstance(result, str):
         return result
